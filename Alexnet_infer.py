@@ -2,8 +2,8 @@ import torch
 from torchvision import transforms
 from models import AlexNet
 def try_gpu(i=0):
-    # if torch.cuda.is_available():
-    #     return torch.device("cuda:{}".format(i))
+    if torch.cuda.is_available():
+        return torch.device("cuda:{}".format(i))
     return torch.device(f"cpu")
 torch.serialization.add_safe_globals({'Residual': AlexNet})
 device=try_gpu()
@@ -16,7 +16,7 @@ def Alexnet_infer(image,model_file):
     image = transform(image)
     image = torch.unsqueeze(image, 0)  # 图像数据展平
     image = image.to(device)
-    model = torch.load(model_file, map_location=torch.device('cpu'))
+    model = torch.load(model_file)
     model = model.to(device)
     model.eval()
     output = model(image)
